@@ -10,10 +10,26 @@
 .container {
     margin: 15px auto;
     background-color: #ffb196;
-    border: 1px solid black;
+    border: 1px solid #6e6e6e;
+    overflow: hidden;
+}
+#c_canvasString {
+    position: absolute;
+    overflow: hidden;
+}
+.c_canvasStringItem {
+    border-bottom: 1px solid black;
+    background-color: #c1c1c1;
+    opacity: 0.5;
+    box-sizing: border-box;
 }
 #c_canvas {
     background-color: azure;
+    border: 1px solid #6e6e6e;
+    box-sizing: content-box;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
 }
 .controlPanel {
     display: flex;
@@ -31,4 +47,12 @@
 }
 .control input {
     margin-bottom: 10px;
+}
+.gridElement {
+    background-color: #eab6b6;
+    box-sizing: border-box;
+    border: 1px solid #6e6e6e;
+    height: 100%;
+    flex: 0 0 auto;
+    margin: 0 5px;
 }

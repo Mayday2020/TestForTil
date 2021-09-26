@@ -4,18 +4,16 @@ document.addEventListener("DOMContentLoaded", function (event) {
     const controlPanel = document.querySelector(".controlPanel");
     const container = document.querySelector(".container");
     const canvasItem = document.querySelector('#c_canvas')
+    const canvasString = document.querySelector('#c_canvasString')
 
-    // canvas inputs
     const canvasWidth_input = controlPanel.querySelector("#canvasWidth"),
         canvasHeight_input = controlPanel.querySelector("#canvasHeight"),
         canvasIndentation_input = controlPanel.querySelector("#canvasIndentation");
-    // column inputs
-    const columnAmount = controlPanel.querySelector("#columnAmount"),
-        columnWidth = controlPanel.querySelector("#columnWidth"),
-        columnIndentation = controlPanel.querySelector("#columnIndentation");
-    // row inputs
-    const stringHeight = controlPanel.querySelector("#stringHeight"),
-        moduleHeight = controlPanel.querySelector("#moduleHeight");
+    const columnAmount_input = controlPanel.querySelector("#columnAmount"),
+        columnWidth_input = controlPanel.querySelector("#columnWidth"),
+        columnIndentation_input = controlPanel.querySelector("#columnIndentation");
+    const stringHeight_input = controlPanel.querySelector("#stringHeight"),
+        moduleHeight_input = controlPanel.querySelector("#moduleHeight");
 
 // clear input
     document.querySelectorAll('input').forEach((input)=>{
@@ -23,140 +21,154 @@ document.addEventListener("DOMContentLoaded", function (event) {
             if(e.target.value == 0){
                 e.target.value = null;
             }
+        });
+        input.addEventListener('blur', (e)=>{
+            if(e.target.value === ''){
+                e.target.value = 0;
+            }
         })
     })
 
-    // start value
-    let containerPadding = 0;
-    let canvasWidth = 100;
-    let canvasHeight = 100;
-
-    const renderWidth = (width) => {
-        container.style.width = width + 'px';
-        canvasItem.style.width = width + 'px';
-    }
-    const renderHeight = (height) => {
-        container.style.height = height + 'px';
-        canvasItem.style.height = height + 'px';
-    }
-    const renderPadding = (padding) => {
-        container.style.padding = padding + 'px';
-    }
-    const toReady = () => {
-        canvasWidth_input.value = canvasWidth;
-        renderWidth(canvasWidth);
-        canvasHeight_input.value = canvasHeight;
-        renderHeight(canvasHeight);
-        canvasIndentation_input.value = containerPadding;
-    }
-    toReady();
-
-    // canvas control
-    canvasWidth_input.addEventListener("input", (e)=>{
-        if (e.target.value > 1000) {
-            canvasWidth_input.value = '1000';
-        } else if (e.target.value < 1 || e.target.value[0] == 0) {
-            canvasWidth_input.value = 0;
+    class AppData {
+        constructor() {
+            this.c_Width = 1800;         // ширина полотна
+            this.c_Height = 720;        // высота полотна
+            this.cont_Padding = 15;     // отступ у полотна
+            this.p_columnAmount = 0;        // кол-во колонок
+            this.p_columnWidth = 10;         // ширина колонок
+            this.p_columnIdentation = 0;    // отступы колонок
+            this.p_stringHeight = 0;    // высота строк
+            this.p_moduleHeight = 0;    // кол-во строк в модуле
         }
-        renderWidth(canvasWidth_input.value);
-        canvasPaint.setSettings();
-        canvasPaint.drawGrid();
-    })
-    canvasHeight_input.addEventListener("input", (e)=>{
-        if(e.target.value > 750) {
-            canvasHeight_input.value = '750'
-        } else if (e.target.value < 1 || e.target.value[0] == 0) {
-            canvasHeight_input.value = 0;
-        }
-        renderHeight(canvasHeight_input.value)
-        canvasPaint.setSettings();
-        canvasPaint.drawGrid();
-    })
-    canvasIndentation_input.addEventListener("input", (e)=>{
-        console.log('canvasIndentation')
-        if (e.target.value > 50){
-            canvasIndentation_input.value = '50'
-        } else if (e.target.value < 0 || e.target.value[0] == 0 || e.target.value === '') {
-            canvasIndentation_input.value = 0;
-        }
-        console.dir(canvasIndentation_input)
-        renderPadding(canvasIndentation_input.value)
-    })
-
-    const canvasPaint = {
-        canvasWidth: canvasWidth_input.value,
-        canvasHeight: canvasHeight_input.value,
-        cellsNumberX: 15,
-        cellsNumberY: 15,
-        color: "#0124ff",
-        setSettings(){
-            canvasItem.width = this.canvasWidth;
-            canvasItem.height = this.canvasHeight;
-            ctx = canvasItem.getContext("2d");
-            ctx.strokeStyle = this.color;
-            lineX = canvasItem.width / this.cellsNumberX;
-            lineY = canvasItem.height / this.cellsNumberY;
-        },
-        drawGrid(){
-            let buf = 0;
-            for (let i = 0; i <= this.cellsNumberX; i++){
-                ctx.beginPath();
-                ctx.moveTo(buf, 0);
-                ctx.lineTo(buf, canvasItem.height);
-                ctx.stroke();
-                buf += lineX;
+        drawTheGrid(){
+            if(document.querySelector('.gridElement')){
+                document.querySelectorAll('.gridElement').forEach((el)=>{
+                    el.remove();
+                });
             }
-            buf = 0;
-            for (let j = 0; j <=this.cellsNumberY; j++){
-                ctx.beginPath();
-                ctx.moveTo(0, buf);
-                ctx.lineTo(canvasItem.width, buf)
-                ctx.stroke();
-                buf += lineY;
+            for(let i = 0; i < this.p_columnAmount; i++){
+                let div = document.createElement('div');
+                div.className = 'gridElement';
+                div.style.width = this.p_columnWidth + 'px';
+                div.style.margin = `0 ${this.p_columnIdentation / 2}px`
+                canvasItem.append(div);
+            }
+            if(this.p_stringHeight > 0){
+                if(document.querySelector('.c_canvasStringItem')){
+                    document.querySelectorAll('.c_canvasStringItem').forEach((el)=>{
+                        el.remove();
+                    });
+                }
+                let stringInterval = Math.round(this.c_Height / this.p_stringHeight)
+                for (let j = 0; j < stringInterval; j++){
+                    let hiddenDiv = document.createElement('div');
+                    hiddenDiv.className = 'c_canvasStringItem';
+                    hiddenDiv.style.width = this.c_Width + 'px';
+                    hiddenDiv.style.height = this.p_stringHeight + 'px';
+                    canvasString.append(hiddenDiv);
+                }
             }
         }
+        getStarted(){
+            canvasWidth_input.value = this.c_Width;
+            canvasHeight_input.value = this.c_Height;
+            canvasIndentation_input.value = this.cont_Padding;
+            columnAmount_input.value = this.p_columnAmount;
+            columnWidth_input.value = this.p_columnWidth;
+            columnIndentation_input.value = this.p_columnIdentation;
+            stringHeight_input.value = this.p_stringHeight;
+            moduleHeight_input.value = this.p_moduleHeight;
+
+            this.renderWidth(this.c_Width);
+            this.renderHeight(this.c_Height)
+            this.renderPadding(this.cont_Padding)
+        }
+        canvasWidthHandler(e){
+            if (e.target.value > 1800) {
+                canvasWidth_input.value = '1800';
+            } else if (e.target.value < 1 || e.target.value[0] == 0) {
+                canvasWidth_input.value = 0;
+            }
+            this.c_Width = canvasWidth_input.value
+            this.renderWidth(this.c_Width);
+        }
+        canvasHeightHandler(e){
+            if(e.target.value > 720) {
+                canvasHeight_input.value = '720'
+            } else if (e.target.value < 1 || e.target.value[0] == 0) {
+                canvasHeight_input.value = 0;
+            }
+            this.c_Height = canvasHeight_input.value
+            this.renderHeight(this.c_Height)
+        }
+        containerPaddingHandler(e){
+            if (e.target.value > 50){
+                canvasIndentation_input.value = '50'
+            } else if (e.target.value < 0 || e.target.value[0] == 0 || e.target.value === '') {
+                canvasIndentation_input.value = 0;
+            }
+            this.cont_Padding = canvasIndentation_input.value
+            this.renderPadding(this.cont_Padding)
+        }
+        columnAmountHandler(e){
+            if (e.target.value > this.c_Width / 2){
+                columnAmount_input.value = this.c_Width / 2
+            } else if (e.target.value < 0 || e.target.value[0] == 0 || e.target.value === ''){
+                columnAmount_input.value = null;
+            }
+            this.p_columnAmount = columnAmount_input.value;
+            this.drawTheGrid();
+        }
+        columnWidthHandler(e){
+            if(e.target.value > this.c_Width / this.p_columnAmount ){
+                columnWidth_input.value = this.c_Width / this.p_columnAmount
+            } else if(e.target.value < 0 || e.target.value[0] == 0 || e.target.value === ''){
+                columnWidth_input.value = null
+            }
+            this.p_columnWidth = columnWidth_input.value;
+            this.drawTheGrid()
+        }
+        columnIndentHandler(e){
+            if(e.target.value > 50){
+                columnIndentation_input.value = '50'
+            } else if (e.target.value < 0 || e.target.value[0] == 0 || e.target.value === ''){
+                columnIndentation_input.value = null
+            }
+            this.p_columnIdentation = columnIndentation_input.value;
+            this.drawTheGrid()
+        }
+        stringHeightHandler(e){
+            if(e.target.value > this.c_Height){
+                stringHeight_input.value = this.c_Height
+            } else if (e.target.value < 0 || e.target.value[0] == 0 || e.target.value === ''){
+                stringHeight_input.value = null
+            }
+            this.p_stringHeight = stringHeight_input.value;
+            this.drawTheGrid()
+        }
+        eventListeners(){
+            canvasWidth_input.addEventListener("input", (event)=>{this.canvasWidthHandler(event)})
+            canvasHeight_input.addEventListener("input", (event)=>{this.canvasHeightHandler(event)})
+            canvasIndentation_input.addEventListener("input", (event)=>{this.containerPaddingHandler(event)})
+            columnAmount_input.addEventListener('input', (event)=>{this.columnAmountHandler(event)})
+            columnWidth_input.addEventListener('input', (event)=>{this.columnWidthHandler(event)})
+            columnIndentation_input.addEventListener('input', (event)=>{this.columnIndentHandler(event)})
+            stringHeight_input.addEventListener('input', (event)=>{this.stringHeightHandler(event)})
+            this.getStarted()
+        }
+        renderWidth(width){
+            canvasItem.style.width = width + 'px';
+            container.style.width = width + 'px';
+        }
+        renderHeight(height){
+            canvasItem.style.height = height + 'px';
+        }
+        renderPadding(padding){
+            container.style.padding = padding + 'px';
+        }
+
     }
-    canvasPaint.setSettings();
-    canvasPaint.drawGrid();
-    /*let context = canvasItem.getContext("2d");
-
-    for (let x = 0.5; x < 400; x += 10) {
-        context.moveTo(x, 0);
-        context.lineTo(x, 400);
-    }
-
-    for (let y = 0.5; y < 400; y += 10) {
-        context.moveTo(0, y);
-        context.lineTo(400, y);
-    }
-
-    context.strokeStyle = "#000";
-    context.stroke();*/
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    const appData = new AppData();
+    appData.eventListeners()
 
 });

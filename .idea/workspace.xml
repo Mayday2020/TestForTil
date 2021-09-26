@@ -15,6 +15,7 @@
   <component name="PropertiesComponent">
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="nodejs_package_manager_path" value="npm" />
     <property name="vue.rearranger.settings.migration" value="true" />
   </component>
   <component name="RunManager">
@@ -36,6 +37,7 @@
       <option name="presentableId" value="Default" />
       <updated>1632559493870</updated>
       <workItem from="1632559495178" duration="31884000" />
+      <workItem from="1632663425866" duration="21628000" />
     </task>
     <servers />
   </component>
