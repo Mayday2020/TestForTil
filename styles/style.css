@@ -1,0 +1,34 @@
+* {
+    margin: 0;
+    font-family: "Verdana", sans-serif;
+}
+.wrapper {
+    padding: 10px;
+    background-color: beige;
+    min-height: 500px;
+}
+.container {
+    margin: 15px auto;
+    background-color: #ffb196;
+    border: 1px solid black;
+}
+#c_canvas {
+    background-color: azure;
+}
+.controlPanel {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    margin-bottom: 10px;
+}
+.control {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end
+}
+.control h3 {
+    margin-bottom: 10px;
+}
+.control input {
+    margin-bottom: 10px;
+}
