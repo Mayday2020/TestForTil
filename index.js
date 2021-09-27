@@ -145,8 +145,8 @@ document.addEventListener("DOMContentLoaded", function (event) {
             this.drawTheGrid()
         }
         columnIndentHandler(e){
-            if(e.target.value > 50){
-                columnIndentation_input.value = '50'
+            if(e.target.value > 150){
+                columnIndentation_input.value = '150'
             } else if (e.target.value < 0 || e.target.value[0] == 0 || e.target.value === ''){
                 columnIndentation_input.value = null
             }
